@@ -1,0 +1,28 @@
+cmake_minimum_required(VERSION 3.16)
+project(cpp-codingchallenge LANGUAGES CXX)
+# Use C++23
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Gather sources in the current directory (recursively)
+file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp"
+)
+
+if(NOT PROJECT_SOURCES)
+    message(STATUS "No source files found in ${CMAKE_CURRENT_SOURCE_DIR}")
+endif()
+
+# Create an executable named after the project
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
+target_link_libraries(${PROJECT_NAME} PRIVATE "-lstdc++exp")
+# Common sensible defaults
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
+if(MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /permissive-)
+else()
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    target_link_libraries(${PROJECT_NAME} PRIVATE pthread) # remove if not needed
+endif()
